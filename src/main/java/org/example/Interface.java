@@ -15,6 +15,7 @@ public class Interface {
     private JPanel manualPanel;
     private JButton startListeningButton;
     private JButton stopListeningButton;
+    private JButton clearListButton;
     private JScrollPane clickListScrollPane;
 
     public Interface() {
@@ -41,6 +42,11 @@ public class Interface {
         startListeningButton = new JButton("Start Listening");
         stopListeningButton = new JButton("Stop Listening");
         stopListeningButton.setEnabled(false);
+        clearListButton = new JButton("Clear List");
+        clearListButton.setEnabled(false);
+
+        JButton saveButton = Auto.getInstance().getSaveButton();
+        saveButton.setEnabled(false);
 
         startListeningButton.addActionListener(new ActionListener() {
             @Override
@@ -49,6 +55,8 @@ public class Interface {
                 startListeningButton.setEnabled(false);
                 stopListeningButton.setEnabled(true);
                 manualButton.setEnabled(false);
+                clearListButton.setEnabled(false);
+                saveButton.setEnabled(false);
             }
         });
 
@@ -59,19 +67,29 @@ public class Interface {
                 startListeningButton.setEnabled(true);
                 stopListeningButton.setEnabled(false);
                 manualButton.setEnabled(true);
+                clearListButton.setEnabled(true);
+                saveButton.setEnabled(true);
+            }
+        });
+
+        clearListButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Auto.getInstance().clearList();
             }
         });
 
         autoPanel.add(startListeningButton);
         autoPanel.add(stopListeningButton);
-        autoPanel.add(Auto.getInstance().getClearListButton());
+        autoPanel.add(clearListButton);
+        autoPanel.add(saveButton);
         autoPanel.setVisible(false);
 
         JList<String> clickList = Auto.getInstance().getClickList();
         clickListScrollPane = new JScrollPane(clickList);
         clickListScrollPane.setVisible(false);
 
-        manualPanel = Manual.getInstance().getManualPanel(); // Assuming Manual.getInstance() is correctly implemented
+        manualPanel = Manual.getInstance().getManualPanel();
 
         frame.setLayout(new BorderLayout());
         frame.add(radioPanel, BorderLayout.NORTH);

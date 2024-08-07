@@ -5,16 +5,12 @@ import javax.swing.*;
 public class Auto {
     private DefaultListModel<String> clickListModel;
     private JList<String> clickList;
-    private JButton clearListButton;
     private boolean isListening;
+    private JButton saveButton;
 
     public Auto() {
         clickListModel = new DefaultListModel<>();
         clickList = new JList<>(clickListModel);
-        clearListButton = new JButton("Clear List");
-        clearListButton.setEnabled(false);
-
-        clearListButton.addActionListener(e -> clearClickList());
     }
 
     public void addClickCoordinates(String coordinates) {
@@ -25,15 +21,10 @@ public class Auto {
         return clickList;
     }
 
-    public JButton getClearListButton() {
-        return clearListButton;
-    }
-
     public void startListening() {
         if (!isListening) {
             ClickListen.initialize();
             isListening = true;
-            clearListButton.setEnabled(false); // Disable Clear List button when listening starts
         }
     }
 
@@ -41,8 +32,29 @@ public class Auto {
         if (isListening) {
             ClickListen.deinitialize();
             isListening = false;
-            clearListButton.setEnabled(true); // Enable Clear List button when listening stops
             removeLastClick();
+        }
+    }
+
+    public void clearList() {
+        SwingUtilities.invokeLater(() -> clickListModel.clear());
+    }
+
+    public JButton getSaveButton() {
+        if (saveButton == null) {
+            saveButton = new JButton("Save");
+            saveButton.addActionListener(e -> saveClickListToManualList());
+        }
+        return saveButton;
+    }
+
+    private void saveClickListToManualList() {
+        Manual manualInstance = Manual.getInstance();
+        DefaultListModel<String> manualListModel = manualInstance.getManualListModel();
+        for (int i = 0; i < clickListModel.size(); i++) {
+            String clickCoordinates = clickListModel.getElementAt(i);
+            String newAction = "Action: " + clickCoordinates;
+            manualListModel.addElement(newAction);
         }
     }
 
@@ -50,10 +62,6 @@ public class Auto {
         if (!clickListModel.isEmpty()) {
             SwingUtilities.invokeLater(() -> clickListModel.remove(clickListModel.getSize() - 1));
         }
-    }
-
-    private void clearClickList() {
-        SwingUtilities.invokeLater(() -> clickListModel.clear());
     }
 
     public static Auto getInstance() {
