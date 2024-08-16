@@ -99,6 +99,9 @@ public class Interface {
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        // Ustawienie widoczności przycisku "Run Autoclicker" po uruchomieniu programu
+        Manual.getInstance().setRunAutoclickerButtonVisible(true);
     }
 
     public void addItem(String item) {
@@ -118,6 +121,9 @@ public class Interface {
 
             boolean manualSelected = manualButton.isSelected();
             manualPanel.setVisible(manualSelected);
+
+            // Ustawienie widoczności przycisku "Run Autoclicker" w zależności od wyboru trybu
+            Manual.getInstance().setRunAutoclickerButtonVisible(manualSelected);
         }
     }
 

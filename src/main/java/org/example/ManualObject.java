@@ -18,66 +18,69 @@ public class ManualObject {
     private JTextField preDelayField;
     private JTextField postDelayField;
     private int manualListIndex;
+    private Run runInstance;
 
     public ManualObject(int manualListIndex) {
         this.manualListIndex = manualListIndex;
+        this.runInstance = new Run(); // Utwórz instancję klasy Run
 
-        // Initialize radio buttons
+        // Inicjalizacja przycisków radiowych
         keyButton = new JRadioButton("Key");
         mouseButton = new JRadioButton("Mouse");
         buttonGroup = new ButtonGroup();
         buttonGroup.add(keyButton);
         buttonGroup.add(mouseButton);
 
-        // Initialize keyComboBox
+        // Inicjalizacja keyComboBox
         keyComboBox = new JComboBox<>(generateKeyList());
 
-        // Panel for the combo box
+        // Panel dla combo boxa
         comboBoxPanel = new JPanel();
         comboBoxPanel.add(keyComboBox);
-        comboBoxPanel.setVisible(false); // Initially hidden
+        comboBoxPanel.setVisible(false); // Początkowo ukryty
 
-        // Initialize addButton
+        // Inicjalizacja addButton
         addButton = new JButton("Add");
 
-        // Initialize saveButton
+        // Inicjalizacja saveButton
         saveButton = new JButton("Save");
 
-        // Initialize keyList
+        // Inicjalizacja keyList
         keyListModel = new DefaultListModel<>();
         keyList = new JList<>(keyListModel);
 
-        // Initialize text fields for delays with specified size
+        // Inicjalizacja pól tekstowych dla opóźnień
         preDelayField = new JTextField();
-        preDelayField.setPreferredSize(new Dimension(50, 25)); // Width 50 pixels, Height 25 pixels
+        preDelayField.setPreferredSize(new Dimension(50, 25));
         postDelayField = new JTextField();
-        postDelayField.setPreferredSize(new Dimension(50, 25)); // Width 50 pixels, Height 25 pixels
+        postDelayField.setPreferredSize(new Dimension(50, 25));
 
-        // Initialize and configure the frame
+        // Inicjalizacja ramki
         JFrame frame = new JFrame("Manual Object Options");
-        frame.setLayout(null); // Set layout to null for manual positioning
-        frame.setSize(600, 400); // Set size to match main window
+        frame.setLayout(null);
+        frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        // Add components to the frame
+        // Panel dla przycisków radiowych
         JPanel radioPanel = new JPanel();
         radioPanel.setLayout(new FlowLayout());
         radioPanel.add(keyButton);
         radioPanel.add(mouseButton);
-        radioPanel.setBounds(10, 10, 580, 50); // Set bounds manually
+        radioPanel.setBounds(10, 10, 580, 50);
         frame.add(radioPanel);
 
+        // Panel dla opóźnień
         JPanel delayPanel = new JPanel();
-        delayPanel.setLayout(null); // Set layout to null for manual positioning
-        delayPanel.setBounds(10, 70, 580, 40); // Set bounds manually
+        delayPanel.setLayout(null);
+        delayPanel.setBounds(10, 70, 580, 40);
 
         JLabel preDelayLabel = new JLabel("Pre Delay (ms):");
-        preDelayLabel.setBounds(10, 10, 100, 25); // Set bounds manually
-        preDelayField.setBounds(120, 10, 50, 25); // Set bounds manually
+        preDelayLabel.setBounds(10, 10, 100, 25);
+        preDelayField.setBounds(120, 10, 50, 25);
 
         JLabel postDelayLabel = new JLabel("Post Delay (ms):");
-        postDelayLabel.setBounds(180, 10, 100, 25); // Set bounds manually
-        postDelayField.setBounds(290, 10, 50, 25); // Set bounds manually
+        postDelayLabel.setBounds(180, 10, 100, 25);
+        postDelayField.setBounds(290, 10, 50, 25);
 
         delayPanel.add(preDelayLabel);
         delayPanel.add(preDelayField);
@@ -85,18 +88,18 @@ public class ManualObject {
         delayPanel.add(postDelayField);
         frame.add(delayPanel);
 
-        // Panel for comboBox and addButton
+        // Panel dla comboBox i addButton
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new BorderLayout());
-        controlPanel.setBounds(10, 120, 580, 100); // Set bounds manually
+        controlPanel.setBounds(10, 120, 580, 100);
         controlPanel.add(comboBoxPanel, BorderLayout.CENTER);
         controlPanel.add(addButton, BorderLayout.SOUTH);
         frame.add(controlPanel);
 
-        // Add keyList and saveButton to a panel
+        // Panel dla keyList i saveButton
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BorderLayout());
-        listPanel.setBounds(10, 230, 580, 130); // Set bounds manually
+        listPanel.setBounds(10, 230, 580, 130);
         listPanel.add(new JScrollPane(keyList), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
@@ -104,26 +107,31 @@ public class ManualObject {
         buttonPanel.add(saveButton);
         listPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        frame.add(listPanel);
+        // Dodanie przycisku "Run Autoclicker" do panelu
+        runInstance.getRunButton().setBounds(10, 370, 580, 40);
+        frame.add(runInstance.getRunButton());
 
+        frame.add(listPanel);
         frame.setVisible(true);
 
-        // Action listener for radio buttons
+        // Action listener dla przycisków radiowych
         keyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                comboBoxPanel.setVisible(true); // Show the combo box when "Key" is selected
+                comboBoxPanel.setVisible(true);
+                runInstance.setRunButtonVisible(true); // Pokazuje przycisk "Run Autoclicker"
             }
         });
 
         mouseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                comboBoxPanel.setVisible(false); // Hide the combo box when "Mouse" is selected
+                comboBoxPanel.setVisible(false);
+                runInstance.setRunButtonVisible(false); // Ukrywa przycisk "Run Autoclicker"
             }
         });
 
-        // Action listener for addButton
+        // Action listener dla addButton
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -134,28 +142,26 @@ public class ManualObject {
             }
         });
 
-        // Action listener for saveButton
+        // Action listener dla saveButton
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Manual manualInstance = Manual.getInstance();
                 DefaultListModel<String> manualListModel = manualInstance.getManualListModel();
 
-                // Read preDelay and postDelay values from text fields
                 int preDelay;
                 int postDelay;
                 try {
                     preDelay = Integer.parseInt(preDelayField.getText());
                 } catch (NumberFormatException ex) {
-                    preDelay = 0; // Default value if parsing fails
+                    preDelay = 0;
                 }
                 try {
                     postDelay = Integer.parseInt(postDelayField.getText());
                 } catch (NumberFormatException ex) {
-                    postDelay = 0; // Default value if parsing fails
+                    postDelay = 0;
                 }
 
-                // Update the selected manual list item with only delay values
                 StringBuilder newContent = new StringBuilder();
                 for (int i = 0; i < keyListModel.getSize(); i++) {
                     newContent.append(keyListModel.getElementAt(i)).append(", ");
@@ -164,20 +170,18 @@ public class ManualObject {
                 newContent.append(postDelay).append(" ms");
 
                 manualListModel.set(manualListIndex, newContent.toString());
-                frame.dispose(); // Close the frame after saving
+                frame.dispose();
             }
         });
     }
 
     private String[] generateKeyList() {
-        // List of keys to be added to the combo box
-        String[] keys = new String[] {
+        return new String[] {
                 "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
                 "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
                 "SPACE", "ENTER", "TAB", "CAPS LOCK", "ESC", "SHIFT", "CTRL", "ALT", "BACKSPACE", "DELETE",
                 "INSERT", "PAGE UP", "PAGE DOWN", "HOME", "END", "ARROW UP", "ARROW DOWN", "ARROW LEFT", "ARROW RIGHT",
                 ",", ".", ";", ":", "[", "]", "/", "\\", "'", "\"", "`", "~"
         };
-        return keys;
     }
 }

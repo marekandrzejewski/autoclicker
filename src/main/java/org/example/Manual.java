@@ -13,6 +13,7 @@ public class Manual {
     private JPanel manualPanel;
     private JButton addButton;
     private JButton deleteButton;
+    private JButton runAutoclickerButton; // Nowy przycisk
 
     public Manual() {
         manualListModel = new DefaultListModel<>();
@@ -32,6 +33,8 @@ public class Manual {
 
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
+        runAutoclickerButton = new JButton("Run Autoclicker"); // Inicjalizacja nowego przycisku
+        runAutoclickerButton.setVisible(false); // Początkowo ukryty
 
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -50,6 +53,13 @@ public class Manual {
             }
         });
 
+        runAutoclickerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startManualAutoclicker(); // Wywołanie metody startManualAutoclicker
+            }
+        });
+
         manualPanel = new JPanel();
         manualPanel.setLayout(new BorderLayout());
 
@@ -57,6 +67,7 @@ public class Manual {
         buttonPanel.setLayout(new FlowLayout());
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
+        buttonPanel.add(runAutoclickerButton); // Dodanie przycisku do panelu
 
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new GridLayout(1, 4));
@@ -84,6 +95,16 @@ public class Manual {
             newContent.append(keyListModel.getElementAt(i)).append(", ");
         }
         manualListModel.set(index, newContent.toString());
+    }
+
+    public void startManualAutoclicker() {
+        // Logika uruchomienia manualnego autoclickera
+        System.out.println("Manual Autoclicker started!");
+        // Możesz tutaj dodać faktyczny kod do automatycznego klikania
+    }
+
+    public void setRunAutoclickerButtonVisible(boolean visible) {
+        runAutoclickerButton.setVisible(visible);
     }
 
     public static Manual getInstance() {
