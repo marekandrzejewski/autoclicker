@@ -1,14 +1,15 @@
 package org.example;
 
-import javax.swing.*;
-
 public class Main {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            // Użycie wyniku z metody getInstance, nawet jeśli jest to tylko dla inicjalizacji
-            Interface interfaceInstance = Interface.getInstance();
-            // Można dodatkowo dodać kod, jeśli potrzebujesz odniesienia do tego obiektu
-        });
+        // Tworzenie instancji klasy Interface
+        Interface ui = new Interface();
+        ui.setVisible(true);
+
+        // Tworzenie instancji klasy ClickListen
+        ClickListen clickListen = new ClickListen(ui);
+
+        // Rejestracja nasłuchiwacza zdarzeń myszy
+        clickListen.startListening();
     }
 }
-

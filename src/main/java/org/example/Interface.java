@@ -5,133 +5,116 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Interface {
-    private JFrame frame;
+public class Interface extends JFrame {
     private DefaultListModel<String> listModel;
-    private JRadioButton manualButton;
-    private JRadioButton autoButton;
+    private JList<String> clickList;
+    private JRadioButton manualRadioButton;
+    private JRadioButton autoRadioButton;
     private ButtonGroup modeGroup;
-    private JPanel autoPanel;
-    private JPanel manualPanel;
-    private JButton startListeningButton;
-    private JButton stopListeningButton;
-    private JButton clearListButton;
-    private JScrollPane clickListScrollPane;
+    private JScrollPane scrollPane;
+    private JButton runAutoclickerButton;
+    private Auto autoPanel; // Panel z przyciskami
 
     public Interface() {
-        frame = new JFrame("Kliknięcia Myszy");
+        // Ustawienia okna
+        setTitle("Lista kliknięć");
+        setSize(400, 300);  // Ustawienie domyślnego rozmiaru okna na 400x300 pikseli
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Ustawienie układu na GridBagLayout
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        // Tworzenie listy i modelu listy
         listModel = new DefaultListModel<>();
+        clickList = new JList<>(listModel);
+        scrollPane = new JScrollPane(clickList);
+        scrollPane.setVisible(false);  // Domyślnie ukrywamy listę
 
-        manualButton = new JRadioButton("Manual");
-        autoButton = new JRadioButton("Auto");
+        // Tworzenie radiobuttonów
+        manualRadioButton = new JRadioButton("Manual");
+        autoRadioButton = new JRadioButton("Auto");
+
+        // Grupa radiobuttonów (aby tylko jeden mógł być zaznaczony naraz)
         modeGroup = new ButtonGroup();
-        modeGroup.add(manualButton);
-        modeGroup.add(autoButton);
-        manualButton.setSelected(true);
+        modeGroup.add(manualRadioButton);
+        modeGroup.add(autoRadioButton);
 
-        manualButton.addActionListener(new ModeChangeListener());
-        autoButton.addActionListener(new ModeChangeListener());
+        // Nasłuchiwacz akcji dla radiobuttonów
+        manualRadioButton.addActionListener(new RadioListener());
+        autoRadioButton.addActionListener(new RadioListener());
 
+        // Panel na radiobuttony
         JPanel radioPanel = new JPanel();
         radioPanel.setLayout(new FlowLayout());
-        radioPanel.add(manualButton);
-        radioPanel.add(autoButton);
+        radioPanel.add(manualRadioButton);
+        radioPanel.add(autoRadioButton);
 
-        autoPanel = new JPanel();
-        autoPanel.setLayout(new FlowLayout());
-        startListeningButton = new JButton("Start Listening");
-        stopListeningButton = new JButton("Stop Listening");
-        stopListeningButton.setEnabled(false);
-        clearListButton = new JButton("Clear List");
-        clearListButton.setEnabled(false);
+        // Dodanie radiobuttonów do okna
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        add(radioPanel, gbc);
 
-        JButton saveButton = Auto.getInstance().getSaveButton();
-        saveButton.setEnabled(false);
+        // Dodanie listy do okna
+        gbc.gridy = 1;
+        add(scrollPane, gbc);
 
-        startListeningButton.addActionListener(new ActionListener() {
+        // Tworzenie przycisku "Run Autoclicker" (na razie bez akcji)
+        runAutoclickerButton = new JButton("Run Autoclicker");
+        runAutoclickerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Auto.getInstance().startListening();
-                startListeningButton.setEnabled(false);
-                stopListeningButton.setEnabled(true);
-                manualButton.setEnabled(false);
-                clearListButton.setEnabled(false);
-                saveButton.setEnabled(false);
+                // Na razie nic nie robi
+                System.out.println("Run Autoclicker clicked (placeholder action).");
             }
         });
 
-        stopListeningButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Auto.getInstance().stopListening();
-                startListeningButton.setEnabled(true);
-                stopListeningButton.setEnabled(false);
-                manualButton.setEnabled(true);
-                clearListButton.setEnabled(true);
-                saveButton.setEnabled(true);
-            }
-        });
+        // Dodanie przycisku na dole okna
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        add(runAutoclickerButton, gbc);
 
-        clearListButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Auto.getInstance().clearList();
-            }
-        });
+        // Tworzenie panelu Auto z przyciskami (w osobnym panelu)
+        autoPanel = new Auto(this);
+        autoPanel.setVisible(false);  // Domyślnie ukrywamy panel z przyciskami
 
-        autoPanel.add(startListeningButton);
-        autoPanel.add(stopListeningButton);
-        autoPanel.add(clearListButton);
-        autoPanel.add(saveButton);
-        autoPanel.setVisible(false);
+        // Dodanie panelu Auto do okna
+        gbc.gridy = 3;
+        add(autoPanel, gbc);
 
-        JList<String> clickList = Auto.getInstance().getClickList();
-        clickListScrollPane = new JScrollPane(clickList);
-        clickListScrollPane.setVisible(false);
-
-        manualPanel = Manual.getInstance().getManualPanel();
-
-        frame.setLayout(new BorderLayout());
-        frame.add(radioPanel, BorderLayout.NORTH);
-        frame.add(clickListScrollPane, BorderLayout.CENTER);
-        frame.add(autoPanel, BorderLayout.SOUTH);
-        frame.add(manualPanel, BorderLayout.EAST);
-        frame.setSize(600, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-
-        // Ustawienie widoczności przycisku "Run Autoclicker" po uruchomieniu programu
-        Manual.getInstance().setRunAutoclickerButtonVisible(true);
+        // Wywołujemy pack, aby dynamicznie dopasowywać rozmiar okna w przyszłości
+        pack();
     }
 
-    public void addItem(String item) {
-        SwingUtilities.invokeLater(() -> listModel.addElement(item));
+    // Metoda dodająca współrzędne do listy
+    public void addCoordinates(String coordinates) {
+        listModel.addElement(coordinates);
     }
 
-    public boolean isAutoMode() {
-        return autoButton.isSelected();
+    // Metoda czyszcząca listę kliknięć
+    public void clearClickList() {
+        listModel.clear();  // Czyści listę kliknięć
     }
 
-    private class ModeChangeListener implements ActionListener {
+    // Wewnętrzna klasa nasłuchująca zmiany stanu radiobuttonów
+    private class RadioListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            boolean autoSelected = autoButton.isSelected();
-            autoPanel.setVisible(autoSelected);
-            clickListScrollPane.setVisible(autoSelected);
-
-            boolean manualSelected = manualButton.isSelected();
-            manualPanel.setVisible(manualSelected);
-
-            // Ustawienie widoczności przycisku "Run Autoclicker" w zależności od wyboru trybu
-            Manual.getInstance().setRunAutoclickerButtonVisible(manualSelected);
+            if (autoRadioButton.isSelected()) {
+                // Jeśli wybrano tryb "Auto", pokaż listę i panel z przyciskami, dopasuj rozmiar okna
+                scrollPane.setVisible(true);
+                autoPanel.setVisible(true);
+                pack();  // Dopasowanie rozmiaru okna
+            } else {
+                // Jeśli wybrano tryb "Manual", ukryj listę i panel z przyciskami, dopasuj rozmiar okna
+                scrollPane.setVisible(false);
+                autoPanel.setVisible(false);
+                pack();  // Dopasowanie rozmiaru okna
+            }
         }
-    }
-
-    public static Interface getInstance() {
-        return InterfaceHolder.INSTANCE;
-    }
-
-    private static class InterfaceHolder {
-        private static final Interface INSTANCE = new Interface();
     }
 }
