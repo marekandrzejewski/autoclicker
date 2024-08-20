@@ -1,116 +1,70 @@
 package org.example;
 
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-import org.jnativehook.mouse.NativeMouseListener;
-
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Auto extends JPanel {
     private JButton startListeningButton;
     private JButton stopListeningButton;
     private JButton saveButton;
     private JButton clearListButton;
-    private boolean isListening = false;
-    private Interface ui;
+    private ClickListener clickListener;
 
     public Auto(Interface ui) {
-        this.ui = ui;
-
-        setLayout(new FlowLayout());
-
-        // Inicjalizacja przycisków
+        // Tworzenie przycisków
         startListeningButton = new JButton("Start Listening");
         stopListeningButton = new JButton("Stop Listening");
         saveButton = new JButton("Save");
         clearListButton = new JButton("Clear List");
+
+        // Początkowo wyłączamy przycisk stopListening, bo nasłuch nie jest aktywny
+        stopListeningButton.setEnabled(false);
+        clearListButton.setEnabled(true);  // Clear List aktywny na starcie
+
+        // Inicjalizujemy ClickListener z referencją do interfejsu UI
+        clickListener = new ClickListener(ui);
+
+        // Akcja dla przycisku "Start Listening"
+        startListeningButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Rozpoczęcie nasłuchiwania kliknięć
+                clickListener.startListening();
+
+                // Dezaktywacja przycisku Start Listening, aktywacja Stop Listening
+                startListeningButton.setEnabled(false);
+                stopListeningButton.setEnabled(true);
+                clearListButton.setEnabled(false);  // Wyłączamy Clear List podczas nasłuchiwania
+            }
+        });
+
+        // Akcja dla przycisku "Stop Listening"
+        stopListeningButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Zatrzymanie nasłuchiwania kliknięć
+                clickListener.stopListening();
+
+                // Aktywacja przycisku Start Listening, dezaktywacja Stop Listening
+                startListeningButton.setEnabled(true);
+                stopListeningButton.setEnabled(false);
+                clearListButton.setEnabled(true);  // Włączamy Clear List po zakończeniu nasłuchiwania
+            }
+        });
+
+        // Akcja dla przycisku "Clear List"
+        clearListButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ui.clearClickList();  // Czyści listę kliknięć
+            }
+        });
 
         // Dodanie przycisków do panelu
         add(startListeningButton);
         add(stopListeningButton);
         add(saveButton);
         add(clearListButton);
-
-        // Nasłuchiwacz dla przycisku "Start Listening"
-        startListeningButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startListening();
-            }
-        });
-
-        // Nasłuchiwacz dla przycisku "Stop Listening"
-        stopListeningButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                stopListening();
-            }
-        });
-
-        // Nasłuchiwacz dla przycisku "Clear List"
-        clearListButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearClickList();
-            }
-        });
-
-        // Ustawienie początkowego stanu przycisków
-        stopListeningButton.setEnabled(false);  // Stop Listening wyłączony na start
-        clearListButton.setEnabled(true);       // Clear List dostępny, gdy nie nasłuchujemy
-    }
-
-    // Metoda włączająca nasłuchiwanie kliknięć
-    private void startListening() {
-        if (!isListening) {
-            // Wyłączanie zbędnych komunikatów logowania z biblioteki NativeHook
-            Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
-            logger.setLevel(Level.OFF);
-
-            // Inicjalizacja nasłuchiwacza
-            NativeMouseListener mouseListener = new ClickListen(ui);
-            try {
-                GlobalScreen.registerNativeHook();
-                GlobalScreen.addNativeMouseListener(mouseListener);
-                System.out.println("Nasłuchiwanie włączone.");
-            } catch (NativeHookException ex) {
-                ex.printStackTrace();
-            }
-
-            // Ustawienie stanu przycisków
-            isListening = true;
-            startListeningButton.setEnabled(false);  // Dezaktywuj Start Listening
-            stopListeningButton.setEnabled(true);    // Aktywuj Stop Listening
-            clearListButton.setEnabled(false);       // Dezaktywuj Clear List
-        }
-    }
-
-    // Metoda wyłączająca nasłuchiwanie kliknięć
-    private void stopListening() {
-        if (isListening) {
-            try {
-                GlobalScreen.unregisterNativeHook();
-                System.out.println("Nasłuchiwanie wyłączone.");
-            } catch (NativeHookException ex) {
-                ex.printStackTrace();
-            }
-
-            // Ustawienie stanu przycisków
-            isListening = false;
-            startListeningButton.setEnabled(true);   // Aktywuj Start Listening
-            stopListeningButton.setEnabled(false);   // Dezaktywuj Stop Listening
-            clearListButton.setEnabled(true);        // Aktywuj Clear List
-        }
-    }
-
-    // Metoda czyszcząca listę kliknięć
-    private void clearClickList() {
-        ui.clearClickList();
-        System.out.println("Lista kliknięć została wyczyszczona.");
     }
 }

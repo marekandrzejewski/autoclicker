@@ -6,10 +6,5 @@ public class Main {
         Interface ui = new Interface();
         ui.setVisible(true);
 
-        // Tworzenie instancji klasy ClickListen
-        ClickListen clickListen = new ClickListen(ui);
-
-        // Rejestracja nasłuchiwacza zdarzeń myszy
-        clickListen.startListening();
     }
 }

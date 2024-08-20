@@ -14,6 +14,7 @@ public class Interface extends JFrame {
     private JScrollPane scrollPane;
     private JButton runAutoclickerButton;
     private Auto autoPanel; // Panel z przyciskami
+    private Manual manualPanel; // Panel z listą manualList
 
     public Interface() {
         // Ustawienia okna
@@ -27,12 +28,6 @@ public class Interface extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
-
-        // Tworzenie listy i modelu listy
-        listModel = new DefaultListModel<>();
-        clickList = new JList<>(listModel);
-        scrollPane = new JScrollPane(clickList);
-        scrollPane.setVisible(false);  // Domyślnie ukrywamy listę
 
         // Tworzenie radiobuttonów
         manualRadioButton = new JRadioButton("Manual");
@@ -58,6 +53,12 @@ public class Interface extends JFrame {
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         add(radioPanel, gbc);
+
+        // Tworzenie listy i modelu listy
+        listModel = new DefaultListModel<>();
+        clickList = new JList<>(listModel);
+        scrollPane = new JScrollPane(clickList);
+        scrollPane.setVisible(false);  // Domyślnie ukrywamy listę
 
         // Dodanie listy do okna
         gbc.gridy = 1;
@@ -86,6 +87,19 @@ public class Interface extends JFrame {
         gbc.gridy = 3;
         add(autoPanel, gbc);
 
+        // Tworzenie panelu Manual z listą manualList
+        manualPanel = new Manual();
+        manualPanel.setVisible(true);  // Ustawiamy widoczność panelu Manual na true
+
+        // Dodanie panelu Manual do okna
+        gbc.gridy = 4;
+        add(manualPanel, gbc);
+
+        // Ustawienie domyślnego wybranego radiobuttona
+        manualRadioButton.setSelected(true);
+        scrollPane.setVisible(false);
+        runAutoclickerButton.setVisible(true);
+
         // Wywołujemy pack, aby dynamicznie dopasowywać rozmiar okna w przyszłości
         pack();
     }
@@ -105,14 +119,16 @@ public class Interface extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (autoRadioButton.isSelected()) {
-                // Jeśli wybrano tryb "Auto", pokaż listę i panel z przyciskami, dopasuj rozmiar okna
+                // Jeśli wybrano tryb "Auto", pokaż listę i panel z przyciskami, ukryj panel Manual
                 scrollPane.setVisible(true);
                 autoPanel.setVisible(true);
+                manualPanel.setVisible(false);
                 pack();  // Dopasowanie rozmiaru okna
             } else {
-                // Jeśli wybrano tryb "Manual", ukryj listę i panel z przyciskami, dopasuj rozmiar okna
+                // Jeśli wybrano tryb "Manual", pokaż panel Manual, ukryj panel Auto
                 scrollPane.setVisible(false);
                 autoPanel.setVisible(false);
+                manualPanel.setVisible(true);
                 pack();  // Dopasowanie rozmiaru okna
             }
         }
