@@ -19,14 +19,14 @@ public class Interface extends JFrame {
     public Interface() {
         // Ustawienia okna
         setTitle("Lista kliknięć");
-        setSize(400, 300);  // Ustawienie domyślnego rozmiaru okna na 400x300 pikseli
+        setSize(500, 500);  // Ustawienie domyślnego rozmiaru okna na 500x500 pikseli
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Ustawienie układu na GridBagLayout
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.BOTH;  // Wypełnienie całej przestrzeni
         gbc.insets = new Insets(5, 5, 5, 5);
 
         // Tworzenie radiobuttonów
@@ -52,6 +52,7 @@ public class Interface extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weighty = 0.1;  // Mały ciężar dla radiobuttonów
         add(radioPanel, gbc);
 
         // Tworzenie listy i modelu listy
@@ -62,6 +63,7 @@ public class Interface extends JFrame {
 
         // Dodanie listy do okna
         gbc.gridy = 1;
+        gbc.weighty = 0.8;  // Ustawienie większego ciężaru dla listy
         add(scrollPane, gbc);
 
         // Tworzenie przycisku "Run Autoclicker" (na razie bez akcji)
@@ -76,6 +78,7 @@ public class Interface extends JFrame {
 
         // Dodanie przycisku na dole okna
         gbc.gridy = 2;
+        gbc.weighty = 0.1;  // Mały ciężar dla przycisku
         gbc.fill = GridBagConstraints.NONE;
         add(runAutoclickerButton, gbc);
 
@@ -92,7 +95,8 @@ public class Interface extends JFrame {
         manualPanel.setVisible(true);  // Ustawiamy widoczność panelu Manual na true
 
         // Dodanie panelu Manual do okna
-        gbc.gridy = 4;
+        gbc.gridy = 1;  // Używamy tego samego miejsca co lista (y = 1)
+        gbc.weighty = 0.8;  // Ustawienie większego ciężaru dla panelu Manual
         add(manualPanel, gbc);
 
         // Ustawienie domyślnego wybranego radiobuttona
@@ -100,8 +104,13 @@ public class Interface extends JFrame {
         scrollPane.setVisible(false);
         runAutoclickerButton.setVisible(true);
 
-        // Wywołujemy pack, aby dynamicznie dopasowywać rozmiar okna w przyszłości
+        // Wywołanie pack() i odświeżenie GUI
         pack();
+        manualPanel.revalidate();
+        manualPanel.repaint();
+
+        // Ustawienie pożądanego rozmiaru okna
+        setSize(500, 500);
     }
 
     // Metoda dodająca współrzędne do listy

@@ -21,8 +21,17 @@ public class Manual extends JPanel {
 
         // JList do wyświetlania obiektów manualList
         JList<String> displayList = new JList<>();
-        add(new JScrollPane(displayList), BorderLayout.CENTER);
 
+        // Tworzenie JScrollPane, który zawiera listę
+        JScrollPane scrollPane = new JScrollPane(displayList);
+
+        // Ustawienie stałej szerokości 500 pikseli dla JScrollPane
+        Dimension fixedSize = new Dimension(500, scrollPane.getPreferredSize().height);
+        scrollPane.setPreferredSize(fixedSize);
+        scrollPane.setMinimumSize(fixedSize);
+        scrollPane.setMaximumSize(fixedSize);
+
+        add(scrollPane, BorderLayout.CENTER);
         // Przykład aktualizacji JList na podstawie manualList
         JButton addButton = new JButton("Add Example Object");
         addButton.addActionListener(e -> {
@@ -33,7 +42,7 @@ public class Manual extends JPanel {
             exampleKeys.add("B");
             manualList.add(new ManualObject(exampleCoords, exampleKeys, "Example Object", 500, 1000));
 
-            // Aktualizacja JList, aby wyświetlać nazwy obiektów
+            // Aktualizacja JList, aby wyświetlać wszystkie szczegóły obiektów
             updateDisplayList(displayList);
         });
 
@@ -44,9 +53,24 @@ public class Manual extends JPanel {
     private void updateDisplayList(JList<String> displayList) {
         DefaultListModel<String> model = new DefaultListModel<>();
         for (ManualObject obj : manualList) {
-            model.addElement(obj.getName());
+            String displayText = "<html>Name: " + obj.getName() +
+                    "Coordinates: " + coordsToString(obj.getClickCoords()) +
+                    " Keys: " + keysToString(obj.getKeys()) +
+                    " Pre-Delay: " + obj.getPreDelay() + "ms" +
+                    " Post-Delay: " + obj.getPostDelay() + "ms</html>";
+            model.addElement(displayText);
         }
         displayList.setModel(model);
+    }
+
+    // Metoda do konwersji tablicy współrzędnych na string
+    private String coordsToString(int[] coords) {
+        return "[" + coords[0] + ", " + coords[1] + "]";
+    }
+
+    // Metoda do konwersji listy klawiszy na string
+    private String keysToString(List<String> keys) {
+        return String.join(", ", keys);
     }
 
     // Getter do manualList, jeśli chcesz uzyskać dostęp do tej listy z innych klas
