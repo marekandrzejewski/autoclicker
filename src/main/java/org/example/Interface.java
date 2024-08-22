@@ -15,18 +15,19 @@ public class Interface extends JFrame {
     private JButton runAutoclickerButton;
     private Auto autoPanel; // Panel z przyciskami
     private Manual manualPanel; // Panel z listą manualList
+    private Run runLoop; // Dodajemy pole Run
 
     public Interface() {
         // Ustawienia okna
         setTitle("Lista kliknięć");
-        setSize(500, 500);  // Ustawienie domyślnego rozmiaru okna na 500x500 pikseli
+        setSize(500, 500);  // Ustawienie domyślnego rozmiaru okna
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Ustawienie układu na GridBagLayout
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;  // Wypełnienie całej przestrzeni
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
 
         // Tworzenie radiobuttonów
@@ -52,7 +53,6 @@ public class Interface extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.weighty = 0.1;  // Mały ciężar dla radiobuttonów
         add(radioPanel, gbc);
 
         // Tworzenie listy i modelu listy
@@ -63,22 +63,30 @@ public class Interface extends JFrame {
 
         // Dodanie listy do okna
         gbc.gridy = 1;
-        gbc.weighty = 0.8;  // Ustawienie większego ciężaru dla listy
         add(scrollPane, gbc);
 
-        // Tworzenie przycisku "Run Autoclicker" (na razie bez akcji)
+        // Tworzenie przycisku "Run Autoclicker" z nową akcją
         runAutoclickerButton = new JButton("Run Autoclicker");
         runAutoclickerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Na razie nic nie robi
-                System.out.println("Run Autoclicker clicked (placeholder action).");
+                // Uruchamiamy pętlę w osobnym wątku, aby nie blokować GUI
+                if (runLoop == null) {
+                    runLoop = new Run(manualPanel);
+                    new Thread(() -> {
+                        try {
+                            runLoop.start();
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }).start();
+                }
+                System.out.println("Autoclicker started.");
             }
         });
 
         // Dodanie przycisku na dole okna
         gbc.gridy = 2;
-        gbc.weighty = 0.1;  // Mały ciężar dla przycisku
         gbc.fill = GridBagConstraints.NONE;
         add(runAutoclickerButton, gbc);
 
@@ -95,8 +103,7 @@ public class Interface extends JFrame {
         manualPanel.setVisible(true);  // Ustawiamy widoczność panelu Manual na true
 
         // Dodanie panelu Manual do okna
-        gbc.gridy = 1;  // Używamy tego samego miejsca co lista (y = 1)
-        gbc.weighty = 0.8;  // Ustawienie większego ciężaru dla panelu Manual
+        gbc.gridy = 4;
         add(manualPanel, gbc);
 
         // Ustawienie domyślnego wybranego radiobuttona
@@ -104,13 +111,8 @@ public class Interface extends JFrame {
         scrollPane.setVisible(false);
         runAutoclickerButton.setVisible(true);
 
-        // Wywołanie pack() i odświeżenie GUI
+        // Wywołujemy pack, aby dynamicznie dopasowywać rozmiar okna w przyszłości
         pack();
-        manualPanel.revalidate();
-        manualPanel.repaint();
-
-        // Ustawienie pożądanego rozmiaru okna
-        setSize(500, 500);
     }
 
     // Metoda dodająca współrzędne do listy
