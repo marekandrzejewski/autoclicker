@@ -41,7 +41,7 @@ public class Manual extends JPanel {
 
         JButton addButton = new JButton("Add Example Object");
         addButton.addActionListener(e -> {
-            manualList.add(new ManualObject(new int[]{100, 200}, List.of("A", "B"), "Example Object", 500, 1000));
+            manualList.add(new ManualObject(new int[]{0,0}, List.of(), "Object", 500, 1000));
             updateDisplayList();
         });
 
