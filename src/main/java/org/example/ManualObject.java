@@ -1,13 +1,14 @@
 package org.example;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ManualObject {
-    private int[] clickCoords;  // Przechowuje współrzędne kliknięcia (2 liczby)
-    private List<String> keys;  // Lista klawiszy w formacie String
-    private String name;        // Nazwa obiektu
-    private int preDelay;       // Czas przed kliknięciem
-    private int postDelay;      // Czas po kliknięciu
+    private int[] clickCoords;
+    private List<String> keys;
+    private String name;
+    private int preDelay;
+    private int postDelay;
 
     // Konstruktor
     public ManualObject(int[] clickCoords, List<String> keys, String name, int preDelay, int postDelay) {
@@ -61,12 +62,11 @@ public class ManualObject {
 
     @Override
     public String toString() {
-        return "ManualObject{" +
-                "clickCoords=" + clickCoords[0] + ", " + clickCoords[1] +
-                ", keys=" + keys +
-                ", name='" + name + '\'' +
-                ", preDelay=" + preDelay +
-                ", postDelay=" + postDelay +
-                '}';
+        return "Name: " + name + // Przykład, załóżmy, że masz takie pola
+                ", Coordinates: " + Arrays.toString(clickCoords) +
+                ", Keys: " + keys.toString() +
+                ", Pre-Delay: " + preDelay + "ms" +
+                ", Post-Delay: " + postDelay + "ms";
     }
+
 }
