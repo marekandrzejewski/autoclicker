@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Interface extends JFrame {
     private DefaultListModel<String> listModel;
@@ -123,6 +126,38 @@ public class Interface extends JFrame {
     // Metoda czyszcząca listę kliknięć
     public void clearClickList() {
         listModel.clear();  // Czyści listę kliknięć
+    }
+
+    // Metoda zapisująca kliknięcia do listy manualList
+    public void saveClickListToManualList(List<String> clickListData) {
+        manualPanel.getManualList().clear(); // Czyszczenie listy przed dodaniem nowych elementów
+        for (String data : clickListData) {
+            try {
+                // Zakładamy, że dane kliknięcia mają format "X: 792, Y: 400"
+                // Wyodrębniamy liczby po etykietach "X: " i "Y: "
+                String[] parts = data.split(","); // Dzielimy na X i Y
+                if (parts.length == 2) {
+                    // Usuwamy tekst "X: " i "Y: " oraz ewentualne białe znaki
+                    int x = Integer.parseInt(parts[0].replaceAll("[^0-9]", "").trim());
+                    int y = Integer.parseInt(parts[1].replaceAll("[^0-9]", "").trim());
+
+                    // Tworzenie obiektu ManualObject i dodanie go do listy manualList
+                    ManualObject obj = new ManualObject(new int[]{x, y}, List.of(), "Object", 500, 1000);
+                    manualPanel.getManualList().add(obj);
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Błąd formatu liczby: " + e.getMessage());
+            }
+        }
+        manualPanel.refreshDisplayList(); // Odświeżenie widoku listy
+    }
+
+
+    // Metoda zwracająca dane kliknięć jako List<String>
+    public List<String> getClickListData() {
+        return IntStream.range(0, listModel.size())
+                .mapToObj(listModel::getElementAt)
+                .collect(Collectors.toList());
     }
 
     // Wewnętrzna klasa nasłuchująca zmiany stanu radiobuttonów

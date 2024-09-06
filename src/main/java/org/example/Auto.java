@@ -3,6 +3,7 @@ package org.example;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class Auto extends JPanel {
     private JButton startListeningButton;
@@ -58,6 +59,17 @@ public class Auto extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ui.clearClickList();  // Czyści listę kliknięć
+            }
+        });
+
+        // Akcja dla przycisku "Save"
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Zapisuje kliknięcia do listy manualList
+                List<String> clickListData = ui.getClickListData();
+                // Wywołujemy metodę w Interface do przetworzenia danych kliknięć
+                ui.saveClickListToManualList(clickListData);
             }
         });
 
