@@ -37,8 +37,10 @@ public class Run {
                         int x = coords[0];
                         int y = coords[1];
                         robot.mouseMove(x, y);
+                        Thread.sleep(1000);
                         robot.mousePress(KeyEvent.BUTTON1_DOWN_MASK);
                         robot.mouseRelease(KeyEvent.BUTTON1_DOWN_MASK);
+                        Thread.sleep(1000);
                     }
                 }
 
@@ -49,6 +51,7 @@ public class Run {
                         if (keyCode != -1) {
                             robot.keyPress(keyCode);
                             robot.keyRelease(keyCode);
+                            Thread.sleep(1000);
                         }
                     }
                 }

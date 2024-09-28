@@ -24,6 +24,7 @@ public class ManualObjectEditor extends JPanel {
     private JTextField userYField;
     private JTextField preDelayField;
     private JTextField postDelayField;
+    private JTextField nameField; // Pole tekstowe do nazwy obiektu
 
     public ManualObjectEditor(int selectedIndex, List<ManualObject> manualList, Manual manualPanel) {
         this.selectedIndex = selectedIndex;
@@ -34,6 +35,17 @@ public class ManualObjectEditor extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 5, 5, 5);
+
+        // Dodanie pola tekstowego "Name" i etykiety
+        JLabel nameLabel = new JLabel("Name:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(nameLabel, gbc);
+
+        nameField = new JTextField(10);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        add(nameField, gbc);
 
         // Lista klawiszy
         keyListModel = new DefaultListModel<>();
@@ -51,47 +63,47 @@ public class ManualObjectEditor extends JPanel {
         // Nowe etykiety i pola tekstowe dla współrzędnych i opóźnień
         JLabel userXLabel = new JLabel("User X:");
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         add(userXLabel, gbc);
 
         userXField = new JTextField(10);
         gbc.gridx = 1;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         add(userXField, gbc);
 
         JLabel userYLabel = new JLabel("User Y:");
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         add(userYLabel, gbc);
 
         userYField = new JTextField(10);
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         add(userYField, gbc);
 
         JLabel preDelayLabel = new JLabel("Pre-Delay:");
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         add(preDelayLabel, gbc);
 
         preDelayField = new JTextField(10);
         gbc.gridx = 1;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         add(preDelayField, gbc);
 
         JLabel postDelayLabel = new JLabel("Post-Delay:");
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         add(postDelayLabel, gbc);
 
         postDelayField = new JTextField(10);
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         add(postDelayField, gbc);
 
         // Listy klawiszy i przyciski
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         add(new JScrollPane(keyList), gbc);
@@ -100,16 +112,16 @@ public class ManualObjectEditor extends JPanel {
         add(new JScrollPane(addedKeyList), gbc);
 
         gbc.gridx = 1;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
         gbc.gridheight = 1;
         add(addButton, gbc);
 
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         add(deleteButton, gbc);
 
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         add(okButton, gbc);
 
         // Obsługa przycisków
@@ -184,7 +196,8 @@ public class ManualObjectEditor extends JPanel {
             int newPreDelay = Integer.parseInt(preDelayField.getText());
             int newPostDelay = Integer.parseInt(postDelayField.getText());
 
-            String newName = "Updated Name"; // Przykładowa wartość
+            // Pobierz nową nazwę z pola tekstowego "Name"
+            String newName = nameField.getText();
 
             // Zaktualizuj obiekt
             manualList.set(selectedIndex, new ManualObject(newCoords, newKeys, newName, newPreDelay, newPostDelay));
@@ -203,6 +216,7 @@ public class ManualObjectEditor extends JPanel {
             ManualObject obj = manualList.get(selectedIndex);
 
             // Inicjalizuj pola tekstowe wartościami z wybranego obiektu
+            nameField.setText(obj.getName()); // Zainicjuj pole tekstowe "Name"
             userXField.setText(String.valueOf(obj.getClickCoords()[0]));
             userYField.setText(String.valueOf(obj.getClickCoords()[1]));
             preDelayField.setText(String.valueOf(obj.getPreDelay()));
