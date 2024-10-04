@@ -41,11 +41,22 @@ public class Auto extends JPanel {
         });
 
         // Akcja dla przycisku "Stop Listening"
+        // Akcja dla przycisku "Stop Listening"
         stopListeningButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Zatrzymanie nasłuchiwania kliknięć
                 clickListener.stopListening();
+
+                // Uzyskanie dostępu do listy kliknięć przez Interface
+                List<String> clickListData = ui.getClickListData();
+
+                // Usunięcie ostatniego elementu z listy kliknięć
+                if (!clickListData.isEmpty()) {
+                    // Pobranie modelu listy i usunięcie ostatniego elementu
+                    DefaultListModel<String> listModel = (DefaultListModel<String>) ui.getClickList().getModel();
+                    listModel.removeElementAt(listModel.size() - 1);
+                }
 
                 // Aktywacja przycisku Start Listening, dezaktywacja Stop Listening
                 startListeningButton.setEnabled(true);

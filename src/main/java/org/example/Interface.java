@@ -130,7 +130,8 @@ public class Interface extends JFrame {
 
     // Metoda zapisująca kliknięcia do listy manualList
     public void saveClickListToManualList(List<String> clickListData) {
-        manualPanel.getManualList().clear(); // Czyszczenie listy przed dodaniem nowych elementów
+        // Nie czyścimy listy manualList, dodajemy nowe elementy do istniejących
+
         for (String data : clickListData) {
             try {
                 // Zakładamy, że dane kliknięcia mają format "X: 792, Y: 400"
@@ -159,7 +160,9 @@ public class Interface extends JFrame {
                 .mapToObj(listModel::getElementAt)
                 .collect(Collectors.toList());
     }
-
+    public JList<String> getClickList() {
+        return clickList;
+    }
     // Wewnętrzna klasa nasłuchująca zmiany stanu radiobuttonów
     private class RadioListener implements ActionListener {
         @Override
