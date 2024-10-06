@@ -132,6 +132,8 @@ public class Interface extends JFrame {
         gbc.gridy = 4;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;  // Panel Manual również skalowalny
+        gbc.fill = GridBagConstraints.BOTH; // Komponent wypełnia dostępne miejsce
+        gbc.insets = new Insets(100, 0, 0, 0); // Odstęp od góry (możesz dostosować wartość)
         add(manualPanel, gbc);
 
         // Ustawienie domyślnego wybranego radiobuttona
@@ -142,7 +144,6 @@ public class Interface extends JFrame {
         // Wywołujemy pack, aby dynamicznie dopasowywać rozmiar okna w przyszłości
         pack();
     }
-
 
     // Metoda dodająca współrzędne do listy
     public void addCoordinates(String coordinates) {

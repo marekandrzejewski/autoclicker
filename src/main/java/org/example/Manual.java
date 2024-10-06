@@ -50,7 +50,7 @@ public class Manual extends JPanel {
         displayList.setTransferHandler(new ListItemTransferHandler()); // Ustawienie TransferHandler
 
         // Panel z przyciskami "Add Example Object", "Delete Object", i "Copy Element"
-        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JPanel buttonPanel = new JPanel();
         JButton addButton = new JButton("Add Example Object");
         JButton deleteButton = new JButton("Delete Object");  // Nowy przycisk
         JButton copyButton = new JButton("Copy Element");  // Przycisk kopiowania
