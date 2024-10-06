@@ -1,9 +1,12 @@
 package org.example;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class ManualObject {
+public class ManualObject implements Serializable {
+    private static final long serialVersionUID = 1L;  // Zalecane do wersjonowania klasy
+
     private int[] clickCoords;
     private List<String> keys;
     private String name;
@@ -62,11 +65,10 @@ public class ManualObject {
 
     @Override
     public String toString() {
-        return "Name: " + name + // Przykład, załóżmy, że masz takie pola
+        return "Name: " + name +
                 ", Coordinates: " + Arrays.toString(clickCoords) +
                 ", Keys: " + keys.toString() +
                 ", Pre-Delay: " + preDelay + "ms" +
                 ", Post-Delay: " + postDelay + "ms";
     }
-
 }

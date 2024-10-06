@@ -17,20 +17,17 @@ public class Manual extends JPanel {
 
     public Manual() {
         manualList = new ArrayList<>();
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout());  // Używamy BorderLayout dla automatycznego rozciągania komponentów
 
         JLabel label = new JLabel("Manual Mode");
-        add(label, BorderLayout.NORTH);
+        add(label, BorderLayout.NORTH);  // Label na górze
 
+        // Tworzymy JList i osadzamy w JScrollPane
         displayList = new JList<>();
         displayList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Tylko jeden element może być zaznaczony naraz
         JScrollPane scrollPane = new JScrollPane(displayList);
 
-        Dimension fixedSize = new Dimension(500, scrollPane.getPreferredSize().height);
-        scrollPane.setPreferredSize(fixedSize);
-        scrollPane.setMinimumSize(fixedSize);
-        scrollPane.setMaximumSize(fixedSize);
-
+        // Dodajemy JScrollPane do głównego panelu, aby zajmował całą dostępną przestrzeń w środku
         add(scrollPane, BorderLayout.CENTER);
 
         // Nasłuchiwanie kliknięć myszy na liście - aktualizacja selectedIndex
@@ -99,7 +96,8 @@ public class Manual extends JPanel {
         buttonPanel.add(copyButton);  // Dodajemy przycisk kopiowania
         buttonPanel.add(deleteButton);
 
-        add(buttonPanel, BorderLayout.SOUTH);  // Dodanie panelu przycisków na dole
+        // Dodanie panelu przycisków na dole
+        add(buttonPanel, BorderLayout.SOUTH);
 
         updateDisplayList();  // Inicjalne odświeżenie listy
     }
