@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 
 public class Interface extends JFrame {
     private DefaultListModel<String> listModel;
+    private ThreadHandler threadHandler;
     private JList<String> clickList;
     private JRadioButton manualRadioButton;
     private JRadioButton autoRadioButton;
@@ -34,6 +35,11 @@ public class Interface extends JFrame {
         // Tworzenie panelu Manual z listą manualList
         manualPanel = new Manual();
         manualPanel.setVisible(true);  // Ustawiamy widoczność panelu Manual na true
+
+        // Initialize ThreadHandler
+        ThreadHandler threadHandler = new ThreadHandler(manualPanel); // Passing reference to Manual panel
+
+        threadHandler.setVisible(true);
 
         // Teraz, gdy manualPanel jest zainicjalizowany, możemy załadować listę
         loadManualList();
@@ -136,6 +142,12 @@ public class Interface extends JFrame {
         gbc.insets = new Insets(100, 0, 0, 0); // Odstęp od góry (możesz dostosować wartość)
         add(manualPanel, gbc);
 
+        // Add ThreadHandler to the window
+        gbc.gridy = 5; // Place below manualPanel
+
+        gbc.weighty = 1.0; // Allow ThreadHandler to scale
+        add(threadHandler, gbc);
+
         // Ustawienie domyślnego wybranego radiobuttona
         manualRadioButton.setSelected(true);
         scrollPane.setVisible(false);
@@ -199,12 +211,14 @@ public class Interface extends JFrame {
                 scrollPane.setVisible(true);
                 autoPanel.setVisible(true);
                 manualPanel.setVisible(false);
+                threadHandler.setVisible(false);
                 pack();  // Dopasowanie rozmiaru okna
             } else {
                 // Jeśli wybrano tryb "Manual", pokaż panel Manual, ukryj panel Auto
                 scrollPane.setVisible(false);
                 autoPanel.setVisible(false);
                 manualPanel.setVisible(true);
+                threadHandler.setVisible(true);
                 pack();  // Dopasowanie rozmiaru okna
             }
         }
